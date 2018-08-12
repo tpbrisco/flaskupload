@@ -1,0 +1,17 @@
+<!doctype html>
+<title>Upload URL</title>
+{% with messages = get_flashed_messages() %}
+ {% if messages %}
+  <ul class=flashes>
+  {% for message in messages %}
+    <li>{{ message }}</li>
+  {% endfor %}
+  </ul>
+  <hr>
+ {% endif %}
+{% endwith %}
+<form action="/download" method=post>
+ <p><input type="url" name="url">
+        <input type="submit" value="Upload">
+ </p>
+</form>
