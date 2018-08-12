@@ -10,7 +10,6 @@ from bokeh.resources import CDN
 from bokeh.plotting import figure
 from bokeh.embed import components
 # bokeh tables
-from bokeh.layouts import widgetbox, row
 from bokeh.models.widgets import DataTable, DateFormatter, TableColumn
 
 UPLOAD_FOLDER = '/tmp/uploads'
