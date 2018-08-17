@@ -8,6 +8,7 @@ from bokeh.models.sources import ColumnDataSource
 from bokeh.resources import CDN
 # bokeh plots
 from bokeh.plotting import figure
+from bokeh.models import TapTool, OpenURL
 from bokeh.embed import components
 # bokeh tables
 from bokeh.models.widgets import DataTable, DateFormatter, TableColumn
@@ -41,6 +42,9 @@ def get_url():
 def generate_plot(title, cds, x, y, tooltip):
     plot = figure(x_axis_type="datetime", title=title, tooltips=tooltip)
     plot.circle(x=x, y=y, source=cds, size=8)
+    plot.add_tools(TapTool())
+    taptool = plot.select(type=TapTool)
+    taptool.callback = OpenURL(url='http://www.dilbert.com/strip/@{AAPL_p}')
     script, div = components(plot)
     return {'script': script, 'div': div}
 
