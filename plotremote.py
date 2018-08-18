@@ -8,7 +8,8 @@ from bokeh.models.sources import ColumnDataSource
 from bokeh.resources import CDN
 # bokeh plots
 from bokeh.plotting import figure
-from bokeh.models import TapTool, OpenURL, CustomJS, HoverTool
+from bokeh.models import TapTool, OpenURL, CustomJS
+from bokeh.events import Tap
 from bokeh.embed import components
 # bokeh tables
 from bokeh.models.widgets import DataTable, DateFormatter, TableColumn
@@ -39,38 +40,14 @@ def get_url():
     # we received a GET request, so just show the template
     return render_template('homepage.j2')
 
-CustomJSCode = """
-var data = cds.data
-var f = cb_obj.data;
-// price = data['AAPL_y'];
-// date = data['AAPL_x'];
-price = "test_price"
-date = "test_date"
-x = cb_obj.x
-y = cb_obj.y
-sx = cb_obj.sx
-sy = cb_obj.sy
-console.log("Price: " + price + " Date: " + date + " x:" + x + " y:" + y + " sx:" + sx + " sy:" + sy);
-// for (var propName in cb_obj) {
-//  propValue = cb_obj[propName]
-//  console.log("name:" + propName + " value:" + propValue)
-// }
-// var selected = geometry
-// for (var propName in selected) {
-//  propValue = cb_data[propName]
-//  console.log("data_name:" + propName + " value:" + propValue)
-// }
-
-"""
-
 def generate_plot(title, cds, x, y, tooltip):
     plot = figure(x_axis_type="datetime", title=title, tooltips=tooltip)
-    # callback = CustomJS(args=dict(cds=cds), code=CustomJSCode)
     plot.circle(x=x, y=y, source=cds, size=8)
-    # plot.js_on_event('tap', callback)
-    plot.add_tools(TapTool(),hover)
-    taptool = plot.select(type=TapTool)
-    taptool.callback = OpenURL(url='http://www.dilbert.com/strip/@{AAPL_p}')
+    taptool = TapTool()
+    # taptool.callback = OpenURL(url='http://www.dilbert.com/strip/@{AAPL_p}')
+    # craft URL by hand, as flask escapes all the symbols - so bokeh doesnt interpolate
+    taptool.callback = OpenURL(url="/display/@{AAPL_p}")
+    plot.add_tools(taptool)
     script, div = components(plot)
     return {'script': script, 'div': div}
 
@@ -83,6 +60,12 @@ def generate_table(title, cds, tooltip):
     # could use a widgetbox is multiple tables were involved
     script, div = components(data_table)
     return {'script': script, 'div': div}
+
+@app.route('/display/<symbol>')
+def display_symbol(symbol):
+    print "Symbol:", symbol
+    return "<html><head>foo</head><body>foo</body></html>"
+    pass
 
 @app.route('/download', methods=['POST'])
 def download_url():
