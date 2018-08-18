@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  </head>
+  <body>
+  <div>
+  <h1>Symbol info</h1>
+{% block body %}{% endblock %}
+  </div>
+<script>
+    console.log("calling")
+    var myInfo = document.querySelector('symbol-info');
+    var mySyms = document.querySelectorAll('ul a');
+    console.log("symbols: " + mySyms.length);
+    for(var i = 0; i <= mySyms.length - 1; i++) {
+      console.log("symbol dingus: " + i + " dkd:" + mySyms[i])
+      mySyms[i].onclick = function(e) {
+        e.preventDefault();
+        var symbolData = e.target.getAttribute('symbol');
+        console.log("attribute symbol:" + symbolData)
+        getData(symbolData);
+      }
+    };
+    console.log("past for loop")
+    function getData(symbolId) {
+      console.log(symbolId);
+      var myRequest = new Request("/fetch/" + symbolId)
+      fetch(myRequest)
+      .then(function(response) { return response.text() })
+      .then(function(text) {
+        myInfo.innerHTML = text;
+      });
+    }
+</script>
+  </body>
+</html>

@@ -61,11 +61,18 @@ def generate_table(title, cds, tooltip):
     script, div = components(data_table)
     return {'script': script, 'div': div}
 
+# display_symbols(symbol) -- create new window to display specifics about
+# the symbol
 @app.route('/display/<symbol>')
 def display_symbol(symbol):
     print "Symbol:", symbol
-    return "<html><head>foo</head><body>foo</body></html>"
-    pass
+    # return(render_template("symbol.html.j2", symbols=symbol))
+    return render_template("showsymbol.html.j2", symbols=[symbol])
+
+@app.route('/fetch/<symbol>')
+def fetch_symbol(symbol):
+    print "fetch:",symbol
+    return "would have retrieved ",symbol
 
 @app.route('/download', methods=['POST'])
 def download_url():
