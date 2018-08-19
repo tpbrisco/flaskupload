@@ -71,12 +71,17 @@ def display_symbol(symbol):
 
 @app.route('/fetch/<symbol>')
 def fetch_symbol(symbol):
+    global current_data_frame
     print "fetch:",symbol
-    return "would have retrieved ",symbol
+    df = current_data_frame
+    row = df.loc[df['AAPL_p'] == symbol]
+    print "row is",row
+    return "x=%f date=%s" % (row.iloc[0]['AAPL_y'], row.iloc[0]['AAPL_p'])
 
 @app.route('/download', methods=['POST'])
 def download_url():
     plots = []
+    global current_data_frame
     if request.method != 'POST':
         flash ("download called with incorrect method")
         return redirect(url_for("get_url"))
@@ -84,6 +89,7 @@ def download_url():
     df = pandas.read_csv(url)
     df['AAPL_p'] = df['AAPL_x']   # make a column for readable date
     df.AAPL_x = pandas.to_datetime(df.AAPL_x) # datetime to make plottable
+    current_data_frame = df
 
     # generate graph of price/date
     tooltips = [ ("index", "$index"), ("price", "@AAPL_y"), ("date", "@{AAPL_p}") ]
