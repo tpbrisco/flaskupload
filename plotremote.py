@@ -1,4 +1,8 @@
 
+# based on sample data from
+# https://github.com/plotly/datasets
+#
+# 
 from flask import Flask, flash, request, redirect, url_for, render_template
 import numpy
 import pandas
