@@ -1,0 +1,6 @@
+applications:
+- name: pydrop
+  memory: 128M
+  disk_quota: 2G
+  instances: 1
+  buildpack: python_buildpack
